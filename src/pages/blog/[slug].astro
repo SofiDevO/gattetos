@@ -1,0 +1,70 @@
+---
+import Layout from "@src/layouts/Layout.astro";
+import { wpquery } from "@src/data/wordpress";
+
+export async function getStaticPaths() {
+  const data = await wpquery({
+    query: `
+  query LoadAllPost {
+  posts {
+    nodes {
+      title
+      slug
+      featuredImage {
+        node {
+          srcSet
+          sizes
+          altText
+          mediaItemUrl
+        }
+      }
+      content(format: RENDERED)
+      author {
+        node {
+          name
+          avatar {
+            url
+          }
+          nickname
+        }
+      }
+      date
+    }
+  }
+}
+  `,
+  });
+
+  return data.posts.nodes.map((post: any) => {
+    return {
+      params: { slug: post.slug },
+      props: { post },
+    };
+  });
+}
+const { post } = Astro.props;
+---
+
+<Layout title="Blog">
+  <section class="flex items-center justify-center w-full pb-20 px-10">
+    <article class="flex flex-col  *:text-white w-full max-w-[900px]">
+      <img
+        src={post.featuredImage.node.mediaItemUrl}
+        srcset={post.featuredImage.node.srcset}
+        sizes={post.featuredImage.node.sizes}
+        alt={post.featuredImage.node.alt}
+        class="max-h-[70dvh] w-full object-cover object-center relative "
+      />
+      <div class="flex gap-3 items-center  my-5 px-3">
+        <img class="w-14 h-14 "  src={post.author.node.avatar.url} alt={post.author.node.name} />
+        <p class=" text-ms font-bold">
+            {post.author.node.name}
+        </p>
+      </div>
+      <h1 class="text-3xl md:text-5xl mb-10 text-center" >{post.title}</h1>
+      <div class="max-w-[800px] flex flex-col items-start gap-10 justify-center self-center *:text-left">
+          <Fragment  set:html={post.content}/>
+        </div>
+        </article>
+  </section>
+</Layout>

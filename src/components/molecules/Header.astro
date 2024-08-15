@@ -1,0 +1,139 @@
+---
+import Dropdown from "@atoms/Dropdown/Dropdown";
+
+const menuElements = [
+  { text: "Home", link: "/" },
+  { text: "About", link: "#" },
+  { text: "Blog", link: "#" },
+  { text: "Contact", link: "#" },
+  {
+    text: "Careers",
+    dropdown: [
+      { text: "subItem1", link: "#" },
+      { text: "subItem2", link: "#" },
+      { text: "subItem3", link: "#" },
+      { text: "subItem4", link: "#" },
+      { text: "subItem5", link: "#" },
+    ],
+  },
+];
+---
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const hamburgerButton = document.getElementById("hamburgerButton");
+    const mobilePanel = document.getElementById("mobilePanel");
+    const closePanel = document.getElementById("closePanel");
+
+    hamburgerButton.addEventListener("click", () => {
+      mobilePanel.classList.toggle("open");
+    });
+
+    closePanel.addEventListener("click", () => {
+      mobilePanel.classList.remove("open");
+    });
+
+    // Optional: Close the panel when clicking outside of it
+    mobilePanel.addEventListener("click", (event) => {
+      if (event.target === mobilePanel) {
+        mobilePanel.classList.remove("open");
+      }
+    });
+  });
+</script>
+
+<header class="bg-white  sticky top-0 z-50">
+  <div class="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8">
+    <a class="block text-teal-600" href="/">
+      <span class="sr-only">Gattetos</span>
+      <h2 class="text-black font-bold text-[1.6rem]">Gattetos</h2>
+    </a>
+
+    <div class="flex flex-1 items-center justify-end md:justify-between">
+      <nav aria-label="Global" class="hidden md:block">
+        <ul class="flex items-center gap-6 text-sm">
+          {menuElements.map((element) =>
+            element.dropdown ? (
+              <Dropdown menuItems={element.dropdown} text={element.text} link={element.link} client:load />
+            ) : (
+              <li><a href={element.link} class="text-gray-700">{element.text}</a></li>
+            )
+          )}
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <div class="sm:flex sm:gap-4">
+          <a
+            class="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"
+            href="#"
+          >
+            Login
+          </a>
+          <a
+            class="hidden rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600 transition hover:text-teal-600/75 sm:block"
+            href="#"
+          >
+            Register
+          </a>
+        </div>
+
+        <button
+          class="block rounded bg-gray-100 p-2.5 text-gray-600 transition hover:text-gray-600/75 md:hidden"
+          id="hamburgerButton"
+        >
+          <span class="sr-only">Toggle menu</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel starts here -->
+  <div id="mobilePanel" class="fixed inset-0 z-10 hidden bg-white">
+    <div class="flex flex-col items-start p-6">
+      <button id="closePanel" class="self-end">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 text-gray-600"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+      <ul class="flex flex-col items-start gap-4 mt-4">
+        {menuElements.map((element) =>
+          element.dropdown ? (
+            <Dropdown menuItems={element.dropdown} text={element.text} link={element.link} mobile={true} client:load />
+          ) : (
+            <li><a href={element.link} class="text-gray-700">{element.text}</a></li>
+          )
+        )}
+      </ul>
+    </div>
+  </div>
+</header>
+
+<style>
+  #mobilePanel {
+    display: none;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  #mobilePanel.open {
+    display: block;
+    transform: translateX(0);
+  }
+</style>

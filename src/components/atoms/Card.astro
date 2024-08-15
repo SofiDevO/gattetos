@@ -1,0 +1,35 @@
+---
+
+
+const { link,linkBody='Leer más', title, body, image,altdesc} = Astro.props;
+---
+
+<article class="overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm group ">
+	<div class="flex h-56 overflow-hidden">
+
+		<img
+		alt={altdesc}
+		src={image}
+		class="h-full w-full object-cover group-hover:scale-[1.2]  transition-transform ease-in-out duration-[.5s]"
+		/>
+	</div>
+
+	<div class="p-4 sm:p-6">
+		<a href={link}>
+
+			<h3 class="text-lg font-medium text-gray-900">
+				{title}
+			</h3>
+		</a>
+
+
+	  <fragment class="mt-2 line-clamp-3 text-sm/relaxed text-gray-500" set:html={body}/>
+
+	  <a href={link} class="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600">
+		{linkBody}
+		<span aria-hidden="true" class="block transition-all group-hover:ms-0.5 rtl:rotate-180">
+		  &rarr;
+		</span>
+	  </a>
+	</div>
+  </article>
